@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Outlet, useNavigate, useHref } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
 import AppBar from '@mui/material/AppBar';
@@ -11,29 +12,45 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Collapse from '@mui/material/Collapse';
 
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-import ChecklistIcon from '@mui/icons-material/Checklist';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import EditNoteIcon from '@mui/icons-material/EditNote';
-import LinearScaleIcon from '@mui/icons-material/LinearScale';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 
-const fontColor = 'rgba(0, 0, 0, 0.65)';
-const borderColor = 'rgba(0, 0, 0, 0.05)';
+import website from '../include/website';
+import { fontColor, borderColor } from '../include/theme';
 
-export default function Layout(props)
+export default function Layout()
 {
-    const [menuOpen, setMenuOpen] = React.useState({
-        asset: false,
-        profit: false,
+    const navigate = useNavigate();
+    const current_path = useHref();
+
+    const initial_states = {};
+    website.map((item) => {
+        if (item.children && item.children.length >= 1) {
+            item.children.map((subitem) => {
+                if (subitem.path == current_path) {
+                    initial_states[item.name] = true;
+                }
+            });
+
+            if (initial_states[item.name] != true) {
+                initial_states[item.name] = false;
+            }
+        } else {
+            initial_states[item.name] = false;
+        }
     });
 
-    const handleMenuClick = (target) => {
-        setMenuOpen({
-            ...menuOpen,
-            [target]: !menuOpen[target]
-        });
+    const [menuOpen, setMenuOpen] = React.useState(initial_states);
+
+    const handleMenuClick = (item) => {
+        if (item.children && item.children.length >= 1) {
+            setMenuOpen({
+                ...menuOpen,
+                [item.name]: !menuOpen[item.name]
+            });
+        } else {
+            navigate(item.path);
+        }
     };
 
     return (
@@ -51,7 +68,10 @@ export default function Layout(props)
                         flexGrow: 1,
                         color: fontColor,
                     }}>
-                        Asset Manager
+                        <Box component="div" sx={{
+                            cursor: 'pointer',
+                            display: 'inline-block',
+                        }} onClick={() => {navigate('/')}}>Asset Manager</Box>
                     </Typography>
                 </Toolbar>
             </AppBar>
@@ -70,46 +90,32 @@ export default function Layout(props)
             >
                 <Toolbar />
                 <Box sx={{ overflow: 'auto' }}>
-                    <List component="nav">
-                        <ListItemButton data-primary="asset" onClick={() => {handleMenuClick('asset')}}>
-                            <ListItemIcon><AttachMoneyIcon /></ListItemIcon>
-                            <ListItemText primary="자산관리" />
-                            {menuOpen['asset'] ? <ExpandLess /> : <ExpandMore />}
-                        </ListItemButton>
-                        <Collapse in={menuOpen['asset']} timeout="auto" unmountOnExit>
-                            <List component="nav" disablePadding>
-                                <ListItemButton sx={{ pl: 4 }}>
-                                    <ListItemIcon><ChecklistIcon /></ListItemIcon>
-                                    <ListItemText primary="자산목록" />
-                                </ListItemButton>
-                            </List>
-                        </Collapse>
-                    </List>
-                    <List component="nav">
-                        <ListItemButton data-primary="profit" onClick={() => {handleMenuClick('profit')}}>
-                            <ListItemIcon><TrendingUpIcon /></ListItemIcon>
-                            <ListItemText primary="수익관리" />
-                            {menuOpen['profit'] ? <ExpandLess /> : <ExpandMore />}
-                        </ListItemButton>
-                        <Collapse in={menuOpen['profit']} timeout="auto" unmountOnExit>
-                            <List component="nav" disablePadding>
-                                <ListItemButton sx={{ pl: 4 }}>
-                                    <ListItemIcon><EditNoteIcon /></ListItemIcon>
-                                    <ListItemText primary="종합수익분석" />
-                                </ListItemButton>
-                                <ListItemButton sx={{ pl: 4 }}>
-                                    <ListItemIcon><LinearScaleIcon /></ListItemIcon>
-                                    <ListItemText primary="기준가 관리" />
-                                </ListItemButton>
-                            </List>
-                        </Collapse>
-                    </List>
+                    {website.map((item) => (
+                        <List component="nav" key={item.name}>
+                            <ListItemButton selected={current_path == item.path} onClick={() => { handleMenuClick(item) }}>
+                                <ListItemIcon>{item.icon}</ListItemIcon>
+                                <ListItemText primary={item.value} />
+                                {item.children && menuOpen[item.name] ? <ExpandLess /> : <ExpandMore />}
+                            </ListItemButton>
+                            {item.children && item.children.length >= 1 ? (
+                            <Collapse in={menuOpen[item.name]} timeout="auto" unmountOnExit>
+                                <List component="nav" disablePadding>
+                                    {item.children.map((subitem) => (   
+                                        <ListItemButton selected={current_path == subitem.path} sx={{ pl: 4 }} onClick={() => { handleMenuClick(subitem) }}>
+                                            <ListItemIcon>{subitem.icon}</ListItemIcon>
+                                            <ListItemText primary={subitem.value} />
+                                        </ListItemButton>
+                                    ))}
+                                </List>
+                            </Collapse>) : null}
+                        </List>
+                    ))}
                 </Box>
             </Drawer>
             <Box component="main" sx={{ flexGrow: 1, p: 3, color: fontColor }}>
                 <Toolbar />
                 <Typography sx={{ color: fontColor }}>
-                    {props.children}
+                    <Outlet />
                 </Typography>
             </Box>
         </Box>

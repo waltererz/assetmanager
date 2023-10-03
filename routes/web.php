@@ -2,6 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\AssetController;
+use App\Http\Controllers\ProfitController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,6 +17,25 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('home');
+Route::redirect('/assets', '/assets/list');
+Route::redirect('/profit', '/profit/report');
+
+// Root
+Route::group(['prefix' => ''], function () {
+    Route::get('/', [HomeController::class, 'show']);
+});
+
+// Assets
+Route::group(['prefix' => 'assets'], function () {
+    Route::get('/list', [AssetController::class, 'show']);
+
+    Route::group(['prefix' => 'settings'], function () {
+        Route::get('/variables', [AssetController::class, 'showSettingVariables']);
+    });
+});
+
+// Profit
+Route::group(['prefix' => 'profit'], function () {
+    Route::get('/report', [ProfitController::class, 'showReport']);
+    Route::get('/baseprice', [ProfitController::class, 'showBasePrice']);
 });

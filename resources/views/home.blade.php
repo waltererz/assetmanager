@@ -1,5 +1,3 @@
 @include('include/header')
-<div id="app" class="container"></div>
-@viteReactRefresh
-@vite(['resources/js/app.jsx'])
+@include('include/body')
 @include('include/footer')
