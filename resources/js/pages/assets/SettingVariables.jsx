@@ -59,7 +59,6 @@ export default function AssetSettingVariables()
     const [tab, setTab] = React.useState(settings[0].value);
     const [alertOpen, setAlertOpen] = React.useState(false);
     const [message, setMessage] = React.useState('');
-    const refInputCategoryName = React.useRef();
     const [inputText, setInputText] = React.useState({});
 
     const handleChange = (event, newTab) => {
@@ -99,7 +98,7 @@ export default function AssetSettingVariables()
         await axios.post('/assets/settings/variables/category', data)
         .then((res) => {
             if (res.data.result == 'ok') {
-                refInputCategoryName.current.value = '';
+                setInputText({category_name: ''});
             }
         }).catch((error) => {
             console.log(error);
@@ -127,7 +126,7 @@ export default function AssetSettingVariables()
             </RoundedBox>
             <ContentBox value={tab} index={settings[0].value}>
                 <Stack direction="row" spacing={1} alignItems="enc">
-                    <Input ref={refInputCategoryName} name="category_name" placeholder="추가할 투자방식 입력" sx={{ fontSize: '0.9rem' }} onChange={changeValue} />
+                    <Input value={inputText.category_name} name="category_name" placeholder="추가할 투자방식 입력" sx={{ fontSize: '0.9rem' }} onChange={changeValue} />
                     <Button variant="contained" size="small" endIcon={<SendIcon />} onClick={submitCategory}>추가</Button>
                 </Stack>
             </ContentBox>
