@@ -31,6 +31,8 @@ Route::group(['prefix' => 'assets'], function () {
 
     Route::group(['prefix' => 'settings'], function () {
         Route::get('/variables', [AssetController::class, 'showSettingVariables']);
+
+        Route::post('/variables/category', [AssetController::class, 'insertCategory']);
     });
 });
 

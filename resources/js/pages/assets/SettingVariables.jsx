@@ -1,61 +1,151 @@
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import { DataGrid } from '@mui/x-data-grid';
+import * as React from 'react';
+import axios from 'axios';
 
-import { TabMenu } from '../../include/assets';
+import Tabs, { tabsClasses } from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Stack from '@mui/material/Stack';
+import Input from '@mui/material/Input';
+import Button from '@mui/material/Button';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
-const columns = {};
-const rows = {};
+import SendIcon from '@mui/icons-material/Send';
 
-columns.category = [
-    {
-        field: 'id',
-        headerName: 'ID',
-        width: 70,
-    },
-    {
-        field: 'name',
-        headerName: '투자방식',
-        width: 130,
-    },
+import RoundedBox from '../../components/RoundedBox';
+
+const settings = [
+    {value: 'category', label: '투자방식'},
+    {value: 'sales', label: '판매회사'},
+    {value: 'country', label: '투자국가'},
+    {value: 'sector', label: '투자섹터'},
+    {value: 'investment_type', label: '투자성격'},
 ];
 
-rows.category = [
-    {id: 1, name: '투자방식 1'},
-    {id: 2, name: '투자방식 2'},
-];
+const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
+function ContentBox(props)
+{
+    const { children, value, index, ...other } = props;
+
+    return (
+        <div
+            role="tabpanel"
+            hidden={value != index}
+            id={`tabpannel-${index}`}
+            aria-labelledby={`tab-${index}`}
+            {...other}
+        >
+            {value == index && (
+                <RoundedBox p={2} mt={2} fs="0.9rem">
+                    {children}
+                </RoundedBox>
+            )}
+        </div>
+    );
+}
+
+function a11yProps(index)
+{
+    return {
+        id: `simple-tab-${index}`,
+        'aria-controls': `simple-tabpannel-${index}`,
+    };
+}
 
 export default function AssetSettingVariables()
 {
+    const [tab, setTab] = React.useState(settings[0].value);
+    const [alertOpen, setAlertOpen] = React.useState(false);
+    const [message, setMessage] = React.useState('');
+    const refInputCategoryName = React.useRef();
+    const [inputText, setInputText] = React.useState({});
+
+    const handleChange = (event, newTab) => {
+        setTab(newTab);
+    };
+
+    const showAlertMessage = () => {
+        setAlertOpen(true);
+    }
+
+    const closeAlertMessage = (event, reason) => {
+        if (reason == 'clickaway') {
+            return;
+        }
+
+        setAlertOpen(false);
+    }
+
+    const changeValue = (event) => {
+        setInputText({
+            ...inputText,
+            [event.target.name]: event.target.value,
+        });
+    }
+
+    const submitCategory = async () => {
+        let category = inputText.category_name;
+
+        if (!category) {
+            setMessage('투자방식 이름으로 2자 이상을 입력해주세요.');
+            showAlertMessage();
+            return;
+        }
+
+        let data = {name: category};
+
+        await axios.post('/assets/settings/variables/category', data)
+        .then((res) => {
+            if (res.data.result == 'ok') {
+                refInputCategoryName.current.value = '';
+            }
+        }).catch((error) => {
+            console.log(error);
+        });
+    };
+
     return (
-        <Box sx={{ display: 'flex' }}>
-            <Box sx={{ flex: 'auto' }}>
-                <Typography variant='h5' gutterBottom>환경변수 추가/삭제</Typography>
-                <Typography variant='h6' gutterBottom>투자방식</Typography>
-                <Typography variant='subtitle2' gutterBottom>유동자산, 주식, 수익증권 등 투자처의 종류를 추가 또는 삭제합니다.</Typography>
-                <Box sx={{ height: 300, maxWidth: 600, mb: 3 }}>
-                    <DataGrid
-                        rows={rows.category}
-                        columns={columns.category}
-                        initialState={{
-                            pagination: {
-                                paginationModel: { page: 0, pageSize: 5 },
-                            },
-                        }}
-                        pageSizeOptions={[5, 10]}
-                        checkboxSelection
-                    />
-                </Box>
-                <Typography variant='h6' gutterBottom>판매회사</Typography>
-                <Typography variant='subtitle2' gutterBottom>투자상품을 판매하는 회사를 추가 또는 삭제합니다. 여기에서 회사는 KB국민은행, KB증권 등 투자상품을 취급하는 금융기관을 말합니다.</Typography>
-                <Typography variant='h6' gutterBottom>투자국가</Typography>
-                <Typography variant='subtitle2' gutterBottom>투자상품이 주로 투자하거나 투자처가 위치한 국가를 추가 또는 삭제합니다.</Typography>
-                <Typography variant='h6' gutterBottom>투자섹터</Typography>
-                <Typography variant='subtitle2' gutterBottom>투자상품 또는 투자처의 산업군과 투자섹터를 추가 또는 삭제합니다. 투자섹터는 최대한 세부적인 사항을 입력해야 합니다.</Typography>
-                <Typography variant='h6' gutterBottom>투자성격</Typography>
-                <Typography variant='subtitle2' gutterBottom>투자처에 투자하는 원인 또는 이유를 추가 또는 삭제합니다. 자본투자, 미래가치투자 등 투자의 원인을 설명할 수 있어야 합니다.</Typography>
-            </Box>
-            <TabMenu width="240" />
-        </Box>
+        <React.Fragment>
+            <RoundedBox>
+                <Tabs
+                    value={tab}
+                    onChange={handleChange}
+                    variant='scrollable'
+                    scrollButtons
+                    sx={{
+                        [`& .${tabsClasses.scrollButtons}`]: {
+                            '&.Mui-disabled': { opacity: 0.3 },
+                        },
+                    }}
+                >
+                    {settings.map((item) => (
+                        <Tab value={item.value} label={item.label} {...a11yProps(item.value)} />
+                    ))}
+                </Tabs>
+            </RoundedBox>
+            <ContentBox value={tab} index={settings[0].value}>
+                <Stack direction="row" spacing={1} alignItems="enc">
+                    <Input ref={refInputCategoryName} name="category_name" placeholder="추가할 투자방식 입력" sx={{ fontSize: '0.9rem' }} onChange={changeValue} />
+                    <Button variant="contained" size="small" endIcon={<SendIcon />} onClick={submitCategory}>추가</Button>
+                </Stack>
+            </ContentBox>
+            <ContentBox value={tab} index={settings[1].value}>
+                판매회사
+            </ContentBox>
+            <ContentBox value={tab} index={settings[2].value}>
+                투자국가
+            </ContentBox>
+            <ContentBox value={tab} index={settings[3].value}>
+                투자섹터
+            </ContentBox>
+            <ContentBox value={tab} index={settings[4].value}>
+                투자성격
+            </ContentBox>
+            <Snackbar anchorOrigin={{horizontal: 'center', vertical: 'top'}} open={alertOpen} autoHideDuration={6000} onClose={closeAlertMessage}>
+                <Alert onClose={closeAlertMessage} severity="error" sx={{ width: '100%' }}>{message}</Alert>
+            </Snackbar>
+        </React.Fragment>
     );
 }

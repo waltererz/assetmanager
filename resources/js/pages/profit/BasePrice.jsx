@@ -1,8 +1,10 @@
-import * as React from 'react';
+import RoundedBox from '../../components/RoundedBox';
 
 export default function ProfitBasePrice()
 {
     return (
-        <div>기준가격 관리</div>
+        <RoundedBox>
+            기준가격 관리
+        </RoundedBox>
     );
 }

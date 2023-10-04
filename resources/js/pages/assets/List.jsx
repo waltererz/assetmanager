@@ -1,13 +1,10 @@
-import Box from '@mui/material/Box';
-
-import { TabMenu } from '../../include/assets';
+import RoundedBox from '../../components/RoundedBox';
 
 export default function AssetList()
 {
     return (
-        <Box sx={{ display: 'flex' }}>
-            <Box sx={{ flex: 'auto' }}>테스트</Box>
-            <TabMenu width="240" />
-        </Box>
+        <RoundedBox>
+            자산목록
+        </RoundedBox>
     );
 }

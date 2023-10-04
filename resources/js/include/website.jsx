@@ -15,6 +15,17 @@ const website = [
                 value: '자산목록',
                 icon: <ChecklistIcon />,
                 path: '/assets/list',
+                elements: [
+                    {
+                        group: '자산관리 설정',
+                        contents: [
+                            {
+                                value: '환경변수 추가/삭제',
+                                path: '/assets/settings/variables',
+                            }
+                        ],
+                    },
+                ],
             },
         ],
     },

@@ -1,8 +1,10 @@
-import * as React from 'react';
+import RoundedBox from '../../components/RoundedBox';
 
 export default function ProfitReport()
 {
     return (
-        <div>종합수익분석</div>
+        <RoundedBox>
+            종합수익분석
+        </RoundedBox>
     );
 }
