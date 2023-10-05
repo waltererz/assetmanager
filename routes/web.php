@@ -17,6 +17,7 @@ use App\Http\Controllers\ProfitController;
 |
 */
 
+// Redirect
 Route::redirect('/assets', '/assets/list');
 Route::redirect('/profit', '/profit/report');
 
@@ -29,10 +30,17 @@ Route::group(['prefix' => ''], function () {
 Route::group(['prefix' => 'assets'], function () {
     Route::get('/list', [AssetController::class, 'show']);
 
+    // Settings
     Route::group(['prefix' => 'settings'], function () {
-        Route::get('/variables', [AssetController::class, 'showSettingVariables']);
 
-        Route::post('/variables/category', [AssetController::class, 'insertCategory']);
+        // Settings - Variables
+        Route::group(['prefix' => 'variables'], function () {
+            Route::get('/', [AssetController::class, 'showSettingVariables']);
+
+            Route::get('/categories', [AssetController::class, 'showCategories']);
+            Route::post('/categories', [AssetController::class, 'storeCategory']);
+            Route::post('/categories/delete', [AssetController::class, 'deleteCategories']);
+        });
     });
 });
 

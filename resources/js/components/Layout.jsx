@@ -18,7 +18,9 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 
 import website from '../include/website';
-import { fontColor, borderColor } from '../include/theme';
+import { fontColor, borderColor, bodyBackgroundColor } from '../include/theme';
+
+document.body.style.backgroundColor = bodyBackgroundColor;
 
 export default function Layout()
 {
