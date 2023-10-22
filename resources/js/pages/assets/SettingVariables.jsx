@@ -3,7 +3,12 @@ import * as React from 'react';
 import Tabs, { tabsClasses } from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 
-import SettingCategories from './SettingCategories';
+import SettingCategories from './Settings/SettingCategories';
+import SettingSales from './Settings/SettingSales';
+import SettingCountries from './Settings/SettingCountries';
+import SettingSectors from './Settings/SettingSectors';
+import SettingInvestmentTypes from './Settings/SettingInvestmentTypes';
+
 import RoundedBox from '../../components/RoundedBox';
 
 const settings = [
@@ -74,16 +79,16 @@ export default function AssetSettingVariables()
                 <SettingCategories />
             </ContentBox>
             <ContentBox value={tab} index={settings[1].value}>
-                판매회사
+                <SettingSales />
             </ContentBox>
             <ContentBox value={tab} index={settings[2].value}>
-                투자국가
+                <SettingCountries />
             </ContentBox>
             <ContentBox value={tab} index={settings[3].value}>
-                투자섹터
+                <SettingSectors />
             </ContentBox>
             <ContentBox value={tab} index={settings[4].value}>
-                투자성격
+                <SettingInvestmentTypes />
             </ContentBox>
         </React.Fragment>
     );

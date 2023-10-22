@@ -86,14 +86,14 @@ export default function SettingCategories()
         .then((res) => {
             if (res.status == 200 && res.data.result == 'ok') {
                 setInputText('');
-                update();
+                updateData();
             }
         }).catch((error) => {
             console.log(error);
         });
     };
 
-    const update = async () => {
+    const updateData = async () => {
         await axios.get('/assets/settings/variables/categories')
         .then((res) => {
             if (res.status == 200) {
@@ -116,7 +116,7 @@ export default function SettingCategories()
         await axios.post('/assets/settings/variables/categories/delete', { data: data })
         .then((res) => {
             if (res.status == 200 && res.data.result == 'ok') {
-                update();
+                updateData();
             }
         }).catch((error) => {
             console.log(error);
@@ -175,7 +175,7 @@ export default function SettingCategories()
     }
 
     React.useEffect(() => {
-        update();
+        updateData();
     }, []);
 
     return (

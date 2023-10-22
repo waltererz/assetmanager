@@ -42,7 +42,7 @@ const website = [
             },
             {
                 name: 'baseprice',
-                value: '기준가격 관리',
+                value: '기준가격관리',
                 icon: <LinearScaleIcon />,
                 path: '/profit/baseprice',
             }

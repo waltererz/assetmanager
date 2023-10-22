@@ -6,9 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 
-class Category extends Model
+class InvestmentType extends Model
 {
     use HasFactory, SoftDeletes;
+
+    protected $table = 'investment_types';
 
     protected $hidden = [
         'id',

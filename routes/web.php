@@ -30,6 +30,8 @@ Route::group(['prefix' => ''], function () {
 Route::group(['prefix' => 'assets'], function () {
     Route::get('/list', [AssetController::class, 'show']);
 
+    Route::get('/lists', [AssetController::class, 'showAssets']);
+
     // Settings
     Route::group(['prefix' => 'settings'], function () {
 
@@ -40,6 +42,22 @@ Route::group(['prefix' => 'assets'], function () {
             Route::get('/categories', [AssetController::class, 'showCategories']);
             Route::post('/categories', [AssetController::class, 'storeCategory']);
             Route::post('/categories/delete', [AssetController::class, 'deleteCategories']);
+
+            Route::get('/sales', [AssetController::class, 'showSales']);
+            Route::post('/sales', [AssetController::class, 'storeSales']);
+            Route::post('/sales/delete', [AssetController::class, 'deleteSales']);
+
+            Route::get('/countries', [AssetController::class, 'showCountries']);
+            Route::post('/countries', [AssetController::class, 'storeCountry']);
+            Route::post('/countries/delete', [AssetController::class, 'deleteCountries']);
+
+            Route::get('/sectors', [AssetController::class, 'showSectors']);
+            Route::post('/sectors', [AssetController::class, 'storeSector']);
+            Route::post('/sectors/delete', [AssetController::class, 'deleteSectors']);
+
+            Route::get('/investment-types', [AssetController::class, 'showInvestmentTypes']);
+            Route::post('/investment-types', [AssetController::class, 'storeInvestmentType']);
+            Route::post('/investment-types/delete', [AssetController::class, 'deleteInvestmentTypes']);
         });
     });
 });
